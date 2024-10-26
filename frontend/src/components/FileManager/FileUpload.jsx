@@ -4,110 +4,94 @@ import cl from './FileUpload.module.css';
 import { apiUploadFiles } from '../../api/FileService';
 
 /**
- * Компонент для загрузки и отправки двух CSV файлов на сервер
- * @param {*} param0
- * @returns
+ * Компонент для загрузки и отправки двух CSV файлов на сервер.
+ * 
+ * @component
+ * @param {function} setResponce - Функция для установки полученного ответа с сервера.
+ * @returns {JSX.Element} - Форма загрузки и отправки файлов.
  */
 const FileUpload = ({ setResponce }) => {
-    const [loading, setLoading] = useState(false); // Индикатор загрузки
-    const [personalDataFile, setPersonalDataFile] = useState(null); // Хранит файл personalData
-    const [txnDataFile, setTxnDataFile] = useState(null); // Хранит файл txnData
-    const [uploadSuccess, setUploadSuccess] = useState(false); // Хранит статус отправки
+    const [loading, setLoading] = useState(false); // Индикатор состояния загрузки
+    const [files, setFiles] = useState({ personalData: null, txnData: null }); // Состояние для хранения файлов
+    const [uploadSuccess, setUploadSuccess] = useState(false); // Статус успешной загрузки
 
-    // Функция для выбора файла с персональными данными в формате CSV
-    const handlePersonalDataChange = (event) => {
+    /**
+     * Обработчик выбора файлов.
+     * Проверяет, что выбранный файл имеет формат .csv.
+     * 
+     * @param {Event} event - Событие выбора файла.
+     * @param {string} type - Тип файла ('personalData' или 'txnData').
+     */
+    const handleFileChange = (event, type) => {
         const selectedFile = event.target.files[0];
         if (selectedFile && selectedFile.name.endsWith('.csv')) {
-            setPersonalDataFile(selectedFile);
+            setFiles((prevFiles) => ({ ...prevFiles, [type]: selectedFile }));
         } else {
-            alert("Пожалуйста, выберите файл формата .csv для личных данных");
+            alert(`Пожалуйста, выберите файл формата .csv для ${type === 'personalData' ? 'личных данных' : 'транзакций'}`);
         }
     };
 
-    // Функция для выбора файла с транзакциями в формате CSV
-    const handleTxnDataChange = (event) => {
-        const selectedFile = event.target.files[0];
-        if (selectedFile && selectedFile.name.endsWith('.csv')) {
-            setTxnDataFile(selectedFile);
-        } else {
-            alert("Пожалуйста, выберите файл формата .csv для транзакционных данных");
-        }
-    };
-
-    // Функция для отправки данных на сервер
+    /**
+     * Отправляет файлы на сервер.
+     * Показывает индикатор загрузки, отправляет файлы с помощью `apiUploadFiles`,
+     * затем обновляет состояние в зависимости от успеха или ошибки.
+     */
     const uploadFiles = async () => {
-        if (!personalDataFile || !txnDataFile) {
+        const { personalData, txnData } = files;
+        if (!personalData || !txnData) {
             alert("Пожалуйста, выберите оба файла перед загрузкой.");
             return;
         }
-        setLoading(true); // Показываем индикатор загрузки
-        setUploadSuccess(false); // Сбрасываем статус перед новой попыткой отправки
+
+        setLoading(true); // Показ индикатора загрузки
+        setUploadSuccess(false); // Сброс статуса успешной загрузки
+
         try {
-            const result = await apiUploadFiles(personalDataFile, txnDataFile); // Вызов функции из API
-            setResponce(result); // Устанавливаем результат (если нужно)
-            setUploadSuccess(true); // Устанавливаем успешный статус
+            const result = await apiUploadFiles(personalData, txnData); // Вызов API для загрузки файлов
+            setResponce(result); // Установка ответа сервера
+            setUploadSuccess(true); // Установка статуса успешной загрузки
             console.log('Файлы успешно загружены:', result);
         } catch (error) {
             console.error('Ошибка при загрузке файлов:', error);
             alert('Произошла ошибка при загрузке файлов.');
         } finally {
-            setLoading(false); // Скрываем индикатор загрузки
+            setLoading(false); // Скрытие индикатора загрузки
         }
     };
 
     return (
         <form className={cl.form} onSubmit={(e) => { e.preventDefault(); uploadFiles(); }}>
             <div className={cl.container}>
-                <div className={cl.buttonContainer}>
-                    {/* Input для выбора файла с персональными данными */}
-                    <input
-                        type="file"
-                        accept=".csv" // Разрешаем только CSV
-                        onChange={handlePersonalDataChange}
-                        style={{ display: 'none' }}
-                        id="personalDataInput"
-                    />
-                    <Button
-                        className={cl.btn}
-                        onClick={() => document.getElementById('personalDataInput').click()}
-                        disabled={loading} // Блокируем кнопку во время загрузки
-                    >
-                        {personalDataFile ? `Файл выбран: ${personalDataFile.name}` : 'Загрузите CSV файл с персональными данными'}
-                    </Button>
-                </div>
-                <div className={cl.buttonContainer}>
-                    {/* Input для выбора файла с транзакциями */}
-                    <input
-                        type="file"
-                        accept=".csv" // Разрешаем только CSV
-                        onChange={handleTxnDataChange}
-                        style={{ display: 'none' }}
-                        id="txnDataInput"
-                    />
-                    <Button
-                        className={cl.btn}
-                        onClick={() => document.getElementById('txnDataInput').click()}
-                        disabled={loading} // Блокируем кнопку во время загрузки
-                    >
-                        {txnDataFile ? `Файл выбран: ${txnDataFile.name}` : 'Загрузите CSV файл с данными о транзакциях'}
-                    </Button>
-                </div>
-                {/* Контейнер для кнопок отправки */}
+                {['personalData', 'txnData'].map((type) => (
+                    <div key={type} className={cl.buttonContainer}>
+                        {/* Инпут для выбора файлов */}
+                        <input
+                            type="file"
+                            accept=".csv" // Разрешаем только файлы формата CSV
+                            onChange={(e) => handleFileChange(e, type)}
+                            style={{ display: 'none' }}
+                            id={`${type}Input`}
+                        />
+                        <Button
+                            className={cl.btn}
+                            onClick={() => document.getElementById(`${type}Input`).click()}
+                            disabled={loading} // Отключаем кнопку при загрузке
+                        >
+                            {files[type] ? `Файл выбран: ${files[type].name}` : `Загрузите CSV файл с ${type === 'personalData' ? 'персональными данными' : 'данными о транзакциях'}`}
+                        </Button>
+                    </div>
+                ))}
                 <div className={cl.buttonContainer}>
                     {/* Кнопка для отправки файлов на сервер */}
                     <Button
                         className={cl.btn}
                         type="primary"
                         onClick={uploadFiles}
-                        disabled={loading || !personalDataFile || !txnDataFile || uploadSuccess} // Блокируем кнопку, если файлы не выбраны или идет загрузка или успешная отправка данных
+                        disabled={loading || !files.personalData || !files.txnData || uploadSuccess} // Условное отключение кнопки
                     >
                         {uploadSuccess ? 'Данные успешно отправлены' : 'Отправить данные на сервер'}
                     </Button>
                 </div>
-                {/* Показываем текст "Загрузка..." во время загрузки */}
-                {loading && (
-                    <div className={cl.loadingText}>Загрузка...</div>
-                )}
             </div>
         </form>
     );

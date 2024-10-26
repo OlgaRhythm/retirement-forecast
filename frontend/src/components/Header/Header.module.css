@@ -1,11 +1,8 @@
 .header {
-   /* background-color: #f8f9fa; /* Цвет фона хедера */
-    padding: 20px; /* Внутренние отступы */
-    text-align: center; /* Текст по центру */
-    /*position: fixed; /* Закрепляем хедер в верхней части */
+    padding: 20px;
+    text-align: center;
     top: 0;
-    /*width: 100%;*/
-    box-shadow: 0 2px 4px rgba(165, 165, 165, 0.1); /* Тень для визуального эффекта */
+    box-shadow: 0 2px 4px rgba(165, 165, 165, 0.1);
   }
   
   .headerText {
@@ -13,6 +10,6 @@
     font-size: 24px;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
-    color: #0085FF; /* Цвет текста */
+    color: #0085FF;
   }
   

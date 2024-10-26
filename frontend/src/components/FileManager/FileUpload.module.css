@@ -5,12 +5,13 @@
 }
 
 .buttonContainer {
-    display: flex; /* Используем Flexbox для горизонтального расположения кнопок */
-    justify-content: space-between; /* Равномерное распределение кнопок по ширине */
-    margin-top: 16px; /* Отступ сверху для кнопок */
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
 }
 
 .btn {
-    width: 350px; /* Фиксированная ширина для каждой кнопки */
-    /*margin: 0 8px; /* Отступ между кнопками */
+    width: 350px;
+    font-weight: bold;
+    font-size: medium;
 }

@@ -1,80 +1,70 @@
 import React, { useState } from 'react';
-import { Button, Table, Typography } from 'antd';
-import styles from './PreviewField.module.css'; // Импортируем стили
+import { Button } from 'antd';
+import styles from './PreviewField.module.css';
 
-const { Title } = Typography;
-
+/**
+ * Компонент PreviewField для отображения изображений графиков.
+ * Позволяет пользователю выбирать различные графики для отображения.
+ * 
+ * @returns {JSX.Element} Компонент для выбора и отображения графиков
+ */
 const PreviewField = () => {
-  const [view, setView] = useState('empty'); // Состояние для отслеживания текущего представления
-  const [selectedImage, setSelectedImage] = useState(null); // Состояние для выбранного графика
+  const [view, setView] = useState('empty'); // Отслеживает текущее представление
+  const [selectedImage, setSelectedImage] = useState(null); // Сохраняет путь к выбранному изображению
 
-  // Данные для таблицы (будут браться первые 5 записей из .csv)
-  const tableData = [
-    { key: '1', name: 'John Doe', age: 32, address: '10 Downing St.' },
-    { key: '2', name: 'Jane Doe', age: 28, address: '20 Downing St.' },
-  ];
-
-  // Список кнопок для графиков
+  // Список доступных графиков с именами и путями к изображениям
   const graphicsData = [
     { name: 'Возраст', imagePath: 'images/graphics/age_graphic.png' },
     { name: 'Количество зубов', imagePath: 'images/graphics/teeth_graphic.png' },
     { name: 'Профессия', imagePath: 'images/graphics/job_graphic.png' },
   ];
 
-  const renderContent = () => {
-    switch (view) {
-      case 'table':
-        return (
-          <Table
-            dataSource={tableData}
-            columns={[
-              { title: 'Name', dataIndex: 'name', key: 'name' },
-              { title: 'Age', dataIndex: 'age', key: 'age' },
-              { title: 'Address', dataIndex: 'address', key: 'address' },
-            ]}
-            pagination={false}
-            style={{ width: '100%' }} // Заставляет таблицу занимать всю ширину контейнера
-          />
-        );
-      case 'image':
-        return (
-          <img
-            src={selectedImage} // Используем состояние для отображения выбранного изображения
-            alt="График"
-            style={{ width: '100%', height: 'auto' }}
-          />
-        );
-      case 'empty':
-      default:
-        return <div>Пусто</div>;
-    }
-  };
+  /**
+   * Функция для рендеринга контента на основе текущего представления.
+   * @returns {JSX.Element} Контент для отображения (изображение или пустое сообщение)
+   */
+  const renderContent = () => (
+    view === 'image' && selectedImage ? (
+      <img
+        src={selectedImage} // Путь к выбранному изображению
+        alt="График"
+        style={{ width: '100%', height: 'auto' }}
+      />
+    ) : (
+      <div>Пусто</div>
+    )
+  );
 
+  /**
+   * Обработчик нажатия на кнопку графика.
+   * Устанавливает выбранное изображение и изменяет представление на 'image'.
+   * 
+   * @param {string} imagePath Путь к изображению графика
+   */
   const handleGraphicClick = (imagePath) => {
-    setSelectedImage(imagePath); // Устанавливаем выбранное изображение
-    setView('image'); // Устанавливаем представление на 'image'
+    setSelectedImage(imagePath);
+    setView('image');
   };
 
   return (
     <div className={styles.container}>
+      {/* Контейнер для отображения графика */}
       <div className={styles.contentBox}>
         {renderContent()}
       </div>
 
+      {/* Контейнер для кнопок выбора графиков */}
       <div className={styles.buttonContainer}>
         {graphicsData.map((graphic, index) => (
           <Button 
             key={index}
             type="default"
-            onClick={() => handleGraphicClick(graphic.imagePath)} // Вызываем функцию для обработки нажатия
-            className={styles.button} // Используем класс из CSS
+            onClick={() => handleGraphicClick(graphic.imagePath)} // Вызов обработчика выбора графика
+            className={styles.button}
           >
             {graphic.name}
           </Button>
         ))}
-        {/* <Button onClick={() => setView('table')} className={styles.button}>
-          Таблица
-        </Button> */}
       </div>
     </div>
   );
