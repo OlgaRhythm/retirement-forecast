@@ -1,0 +1,28 @@
+.container {
+    padding: 20px;
+  }
+  
+  .contentBox {
+    width: 90%; /* Ширина поля на 90% от ширины страницы */
+    max-width: 1000px; /* Максимальная ширина */
+    height: 400px; /* Фиксированная высота */
+    margin: 0 auto; /* Центрирует контейнер */
+    border: 1px solid #d9d9d9; /* Граница контейнера */
+    border-radius: 4px; /* Закругление углов */
+    overflow: auto; /* Прокрутка, если контент не помещается */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: center; /* Центрирует кнопки */
+    margin-top: 20px;
+    flex-wrap: wrap; /* Позволяет кнопкам обтекать */
+  }
+  
+  .button {
+    margin-right: 10px; /* Отступ между кнопками */
+    margin-bottom: 10px; /* Отступ снизу */
+  }
