@@ -15,7 +15,7 @@ import java.util.List;
 
 
 /**
- * @author iegorov
+ * @autor iegorov
  * @since 1.0.0
  */
 @Service("pfo.csvProcessorServiceImpl")
@@ -27,6 +27,7 @@ public class CsvProcessorServiceImpl implements CsvProcessorService {
         try (CSVReader csvReader = new CSVReader(new FileReader(csvFile))) {
 
             List<String[]> records = csvReader.readAll();
+
             // Пропускаем первую строку, которая является заголовком
             records.remove(0);
 
