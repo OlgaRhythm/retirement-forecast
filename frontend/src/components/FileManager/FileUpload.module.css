@@ -16,3 +16,8 @@
     font-size: medium;
     white-space: normal;
 }
+
+.rightAlignedButton {
+    display: flex;
+    justify-content: flex-end;
+}

@@ -14,6 +14,7 @@ const FileUpload = ({ setResponce }) => {
     const [loading, setLoading] = useState(false); // Индикатор состояния загрузки
     const [files, setFiles] = useState({ personalData: null, txnData: null }); // Состояние для хранения файлов
     const [uploadSuccess, setUploadSuccess] = useState(false); // Статус успешной загрузки
+    const [csvData, setCsvData] = useState(null); // Состояние для данных CSV
 
     /**
      * Обработчик выбора файлов.
@@ -49,6 +50,7 @@ const FileUpload = ({ setResponce }) => {
         try {
             const result = await apiUploadFiles(personalData, txnData); // Вызов API для загрузки файлов
             setResponce(result); // Установка ответа сервера
+            setCsvData(result); // Установка данных CSV для скачивания
             setUploadSuccess(true); // Установка статуса успешной загрузки
             console.log('Файлы успешно загружены:', result);
         } catch (error) {
@@ -57,6 +59,19 @@ const FileUpload = ({ setResponce }) => {
         } finally {
             setLoading(false); // Скрытие индикатора загрузки
         }
+    };
+
+    /**
+     * Генерирует и скачивает CSV файл.
+     */
+    const downloadCsv = () => {
+        const blob = new Blob([csvData], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'PersonRetirementDataToAnalyze.csv';
+        link.click();
+        window.URL.revokeObjectURL(url);
     };
 
     return (

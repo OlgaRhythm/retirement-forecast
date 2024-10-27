@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Table, Typography } from 'antd';
+import { Table, Typography, Button } from 'antd';
 import FileUpload from '../FileManager/FileUpload';
 
 const { Title } = Typography;
@@ -28,6 +28,30 @@ const ResultView = () => {
         },
     ];
 
+    /**
+     * Функция для скачивания данных таблицы в формате CSV.
+     */
+    const downloadTableAsCsv = () => {
+        if (!resultData?.predictedRetirementData) return;
+    
+        // Заголовки CSV
+        const headers = ['accnt_id', 'erly_pnsn_flg'];
+        const csvRows = [headers.join(',')];
+    
+        // Данные CSV с 1 и 0 вместо "Да" и "Нет"
+        resultData.predictedRetirementData.forEach((row) => {
+            csvRows.push([row.accountId, row.isRetirementEarly ? '1' : '0'].join(','));
+        });
+    
+        // Конвертируем в формат Blob с кодировкой UTF-8 и создаем ссылку для скачивания
+        const csvData = new Blob([`\uFEFF${csvRows.join('\n')}`], { type: 'text/csv;charset=utf-8;' });
+        const csvUrl = URL.createObjectURL(csvData);
+        const link = document.createElement('a');
+        link.href = csvUrl;
+        link.download = 'predicted_retirement_data.csv';
+        link.click();
+    };
+
     return (
         <div>
             {/* Компонент загрузки файлов с передачей функции для установки результата */}
@@ -43,6 +67,15 @@ const ResultView = () => {
                     </Title>
                     <br />
                     <Title level={3}>Результат прогноза досрочного выхода на пенсию:</Title>
+
+                    {/* Кнопка для скачивания таблицы как CSV */}
+                    <Button
+                        type="primary"
+                        style={{ marginBottom: '16px' }}
+                        onClick={downloadTableAsCsv}
+                    >
+                        Скачать таблицу в формате CSV
+                    </Button>
 
                     {/* Таблица для отображения предсказанных данных о выходе на пенсию */}
                     <Table
