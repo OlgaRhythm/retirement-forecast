@@ -7,11 +7,12 @@
 .buttonContainer {
     display: flex;
     justify-content: space-between;
-    margin-top: 16px;
+    margin-top: 10px;
 }
 
 .btn {
-    width: 350px;
+    width: 450px;
     font-weight: bold;
     font-size: medium;
+    white-space: normal;
 }
