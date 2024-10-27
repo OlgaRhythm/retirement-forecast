@@ -3,8 +3,8 @@ version: '3.8'
 services:
   backend:
     build:
-      context: .
-      dockerfile: \backend\Dockerfile
+      dockerfile: backend/
+    container_name: rf-backend
     ports:
       - "8080:8080"
     networks:
@@ -12,17 +12,16 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: \ml_block\Dockerfile
+      dockerfile: ml_block/
+    container_name: rf-ml
     ports:
-      - "5000:5000"
+      - "8071:5000"
     networks:
       - app-network
 
   frontend:
-    build:
-      context: .
-      dockerfile: \frontend\Dockerfile
+    build: frontend/
+    container_name: rf-frontend
     ports:
       - "80:80"
     networks:
