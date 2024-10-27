@@ -9,10 +9,26 @@ import java.util.List;
 
 
 /**
- * @author iegorov
+ * Интерфейс для обработки данных от ML сервиса для анализа пенсионных данных.
+ * <p>
+ * Этот интерфейс предоставляет метод для получения данных для анализа путем отправки файлов на ML сервис и обработки
+ * полученного ответа.
+ * </p>
+ *
+ * @autor iegorov
  * @since 1.0.0
  */
 public interface PredictionMlServiceHandler {
 
+    /**
+     * Интерфейс для обработки данных от ML сервиса для анализа пенсионных данных.
+     * <p>
+     * Этот интерфейс предоставляет метод для получения данных для анализа путем отправки файлов на ML сервис и обработки
+     * полученного ответа.
+     * </p>
+     *
+     * @autor iegorov
+     * @since 1.0.0
+     */
     List<PersonRetirementDataToAnalyze> getDataToAnalyze(File personalDataFile, File txnDataFile) throws IOException, CsvException;
 }
