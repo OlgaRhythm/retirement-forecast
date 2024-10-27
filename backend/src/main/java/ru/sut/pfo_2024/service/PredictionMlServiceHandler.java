@@ -12,8 +12,7 @@ import java.util.List;
  * @author iegorov
  * @since 1.0.0
  */
-public interface CsvProcessorService {
+public interface PredictionMlServiceHandler {
 
-    // Преобразует csv файл с ML в сущность PersonRetirementDataToAnalyze
-    List<PersonRetirementDataToAnalyze> getPersonRetirementData(File csvFile) throws IOException, CsvException;
+    List<PersonRetirementDataToAnalyze> getDataToAnalyze(File personalDataFile, File txnDataFile) throws IOException, CsvException;
 }

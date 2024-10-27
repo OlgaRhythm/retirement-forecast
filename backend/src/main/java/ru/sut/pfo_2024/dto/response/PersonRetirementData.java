@@ -3,9 +3,6 @@ package ru.sut.pfo_2024.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import ru.sut.pfo_2024.dto.EarlyRetirementEnum;
-
-import java.util.UUID;
 
 
 /**
@@ -17,7 +14,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PersonRetirementData {
 
+    // Уникальный идентификатор клиента
     private String accountId;
 
+    // Флаг определяющий вероятность досрочного выхода на пенсию
     private Byte isRetirementEarly;
 }

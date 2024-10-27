@@ -1,12 +1,6 @@
 package ru.sut.pfo_2024.cfg;
 
-import jakarta.servlet.MultipartConfigElement;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.boot.web.servlet.MultipartConfigFactory;
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.util.unit.DataSize;
 
 
 /**

@@ -9,7 +9,7 @@ import ru.sut.pfo_2024.dto.response.PredictedData;
 
 /**
  * @author iegorov
- * @since %CURRENT_VERSION%
+ * @since 1.0.0
  */
 public interface PredictionController {
 

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 
 /**
@@ -24,10 +23,11 @@ public class PersonRetirementDataToAnalyze {
     // Уникальный идентификатор клиента
     private String accountId;
 
-    // Переменная отвечает за то, выйдет ли человек на пенсию раньше
+    // Флаг, который определяет выйдет ли человек на пенсию раньше или нет
     private Byte isRetirementEarly;
 
-    /* Сумма выплан, которую необходимо выплатить человеку за год. Это может быть
-    как суммой */
+    // Сумма выплан, которую необходимо выплатить человеку за год. Это может быть
+    // как суммой ежемесяный платежей, так и единовременной выплатой. Логика
+    // заполнения данного поля определена в модуле ML
     private BigDecimal yearlyPayment;
 }

@@ -2,22 +2,18 @@ package ru.sut.pfo_2024.controller.impl;
 
 import com.opencsv.exceptions.CsvException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import ru.sut.pfo_2024.controller.PredictionController;
 import ru.sut.pfo_2024.dto.PersonRetirementDataToAnalyze;
 import ru.sut.pfo_2024.dto.response.PersonRetirementData;
 import ru.sut.pfo_2024.dto.response.PredictedData;
 import ru.sut.pfo_2024.service.CsvProcessorService;
+import ru.sut.pfo_2024.service.FileHandlerService;
+import ru.sut.pfo_2024.service.PredictionMlServiceHandler;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -32,11 +28,14 @@ import java.util.List;
 @CrossOrigin
 public class PredictionControllerImpl implements PredictionController {
 
-//    @Value("${ml.early.retirement.prediction.service.url}")
-    private String mlServiceUrl = "http://localhost:8071/api/predict";
-
     @Autowired
     private CsvProcessorService CsvProcessorService;
+
+    @Autowired
+    private FileHandlerService fileHandlerService;
+
+    @Autowired
+    private PredictionMlServiceHandler predictionMlServiceHandler;
 
     @Override
     @PostMapping("predict")
@@ -52,20 +51,11 @@ public class PredictionControllerImpl implements PredictionController {
                 }
 
                 // Конвертация MultipartFile в File
-                File personalDataFile = convertMultipartFileToFile(personalData);
-                File txnDataFile = convertMultipartFileToFile(txnData);
+                File personalDataFile = fileHandlerService.convertMultipartFileToFile(personalData);
+                File txnDataFile = fileHandlerService.convertMultipartFileToFile(txnData);
 
                 // Отправка файлов в ML сервис
-                RestTemplate restTemplate = new RestTemplate();
-                MultiValueMap<String, Object> request = new LinkedMultiValueMap<>();
-                request.add("personalData", new FileSystemResource(personalDataFile));
-                request.add("txnData", new FileSystemResource(txnDataFile));
-
-                ResponseEntity<String> response = restTemplate.postForEntity(mlServiceUrl, request, String.class);
-
-                // Получение CSV от ML сервиса и его обработка
-                File receivedCsv = convertStringToFile(response.getBody());
-                List<PersonRetirementDataToAnalyze> analyzedData = CsvProcessorService.getPersonRetirementData(receivedCsv);
+                List<PersonRetirementDataToAnalyze> analyzedData = predictionMlServiceHandler.getDataToAnalyze(personalDataFile, txnDataFile);
 
                 PredictedData predictedData = new PredictedData();
 
@@ -89,17 +79,5 @@ public class PredictionControllerImpl implements PredictionController {
         }
     }
 
-        private File convertMultipartFileToFile(MultipartFile file) throws IOException {
-            File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
-            file.transferTo(convFile);
-            return convFile;
-        }
 
-        private File convertStringToFile (String csvContent) throws IOException {
-            File tempFile = File.createTempFile("ml_output", ".csv");
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-                writer.write(csvContent);
-            }
-            return tempFile;
-        }
-    }
+}

@@ -12,14 +12,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 /**
  * @author iegorov
  * @since 1.0.0
  */
-@Service("pfo.csvProcessorService")
+@Service("pfo.csvProcessorServiceImpl")
 public class CsvProcessorServiceImpl implements CsvProcessorService {
 
     public List<PersonRetirementDataToAnalyze> getPersonRetirementData(File csvFile) throws IOException, CsvException {
@@ -33,11 +32,11 @@ public class CsvProcessorServiceImpl implements CsvProcessorService {
 
             for (String[] record : records) {
                 analyzedData.add(
-                    PersonRetirementDataToAnalyze.builder()
-                            .accountId(record[0])
-                            .isRetirementEarly(Byte.valueOf(record[1]))
-                            .yearlyPayment(new BigDecimal(record[2]))
-                            .build()
+                        PersonRetirementDataToAnalyze.builder()
+                                .accountId(record[0])
+                                .isRetirementEarly(Byte.valueOf(record[1]))
+                                .yearlyPayment(new BigDecimal(record[2]))
+                                .build()
                 );
             }
         }
