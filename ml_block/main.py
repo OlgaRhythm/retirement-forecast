@@ -12,6 +12,12 @@ app = Flask(__name__)
 # Маршрут API для предсказания выхода на пенсию
 @app.route('/api/predict', methods=['POST'])
 def predict_retirement():
+    """
+    Точка доступа API для предсказания пенсионных данных на основе загруженных файлов с личными данными и данными транзакций.
+    
+    Возвращает:
+        CSV-файл, содержащий идентификатор счета, флаг досрочной пенсии и годовой пенсионный платеж.
+    """
 
     # Получаем файлы из запроса
     personal_data_file = request.files['personalData']  # Файл с персональными данными
@@ -26,7 +32,7 @@ def predict_retirement():
     result_df = fnc.compute_money_left(result_df, transaction_df)
 
     # Устанавливаем конечный возраст выхода на пенсию в зависимости от пола
-    result_df["retirement_end_year"] = result_df.gndr.apply(lambda x: 82 if x=="ж" else 87)
+    result_df["retirement_end_year"] = result_df.gndr.apply(lambda x: 82 if x == "ж" else 87)
 
     # Рассчитываем годовой пенсионный платеж
     result_df["yearly_pension_payment"] = result_df["money_left"] / np.where(
@@ -40,6 +46,8 @@ def predict_retirement():
     if 'erly_pnsn_flg' in result_df.columns:
         result_df.drop("erly_pnsn_flg", axis=1, inplace=True)
     result_df = pd.merge(result_df, preds, on='clnt_id', how='inner')
+
+    # Формируем финальный DataFrame с нужными колонками
     final_df = result_df[["accnt_id", "erly_pnsn_flg", "yearly_pension_payment"]]
 
     # Записываем результат в CSV
